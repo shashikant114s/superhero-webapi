@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "Shashi@12"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - superhero-net
+
+  webapi:
+    build: .
+    environment:
+      - DB_CONNECTION_STRING=Server=sqlserver,1433;Database=SuperHeros;User Id=SA;Password=Shashi@12;TrustServerCertificate=True;
+    depends_on:
+      - sqlserver
+    expose:
+      - "8080"
+    networks:
+      - superhero-net
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - webapi
+    networks:
+      - superhero-net
+
+networks:
+  superhero-net:
+    driver: bridge
+volumes:
+  sql_data:
