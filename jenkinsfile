@@ -1,0 +1,81 @@
+#!/usr/bin/env groovy
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'shashikdocker/demo-app'
+        IMAGE_TAG = "${env.BUILD_NUMBER}"  // Automatically tags with Jenkins build number
+    }
+
+    stages {
+        stage('Clone') {
+            steps {
+                echo 'Cloning repository...'
+                
+                script {
+                    echo "Building branch: ${env.GIT_BRANCH}"
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    // If your Dockerfile is not in root, modify with -f path/to/Dockerfile
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                echo "Deploying container with image: ${IMAGE_NAME}:${IMAGE_TAG}"
+                // Ensure Docker network exists before trying to run the container
+                sh """
+                    docker network inspect sql-network >/dev/null 2>&1 || docker network create sql-network
+                    docker stop my-dotnet-api || true
+                    docker rm my-dotnet-api || true
+                    docker run -d --name my-dotnet-api \
+                        --network sql-network \
+                        -e DB_CONNECTION_STRING="Server=sql-server,1433;Database=SuperHeros;User Id=SA;Password=Shashi@12;TrustServerCertificate=True;" \
+                        -p 80:80 ${IMAGE_NAME}:${IMAGE_TAG}
+                """
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up dangling Docker images...'
+            sh "docker image prune -f"
+        }
+        success {
+            echo 'Deployment successful! Sending Slack notification...'
+            slackSend (
+                channel: '#devops-team', 
+                color: 'good', 
+                message: "✅ Deployment successful for *${env.JOB_NAME}* #${env.BUILD_NUMBER}.\nImage: *${IMAGE_NAME}:${IMAGE_TAG}*"
+            )
+        }
+        failure {
+            echo 'Deployment failed! Sending Slack notification...'
+            slackSend (
+                channel: '#devops-team', 
+                color: 'danger', 
+                message: "❌ Deployment failed for *${env.JOB_NAME}* #${env.BUILD_NUMBER}."
+            )
+        }
+    }
+}

@@ -1,0 +1,49 @@
+# ============================
+# IntelliJ IDEA
+# ============================
+.idea/
+*.iml
+*.iws
+out/
+
+# ============================
+# Build results
+# ============================
+bin/
+obj/
+build/
+out/
+*.log
+
+# ============================
+# User-specific files
+# ============================
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ============================
+# Visual Studio
+# ============================
+.vs/
+.vscode/
+
+# ============================
+# ASP.NET / .NET config
+# ============================
+appsettings.*.local.json
+secrets.json
+*.pdb
+
+# ============================
+# OS & Editor junk
+# ============================
+.DS_Store
+Thumbs.db
+
+# ============================
+# Rider (optional if you use JetBrains Rider too)
+# ============================
+.idea/
+*.sln.iml
