@@ -3,7 +3,7 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
-      SA_PASSWORD: "Shashi@12"
+      SA_PASSWORD: "Test@12"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
@@ -15,7 +15,7 @@ services:
   webapi:
     build: .
     environment:
-      - DB_CONNECTION_STRING=Server=sqlserver,1433;Database=SuperHeros;User Id=SA;Password=Shashi@12;TrustServerCertificate=True;
+      - DB_CONNECTION_STRING=Server=sqlserver,1433;Database=SuperHeros;User Id=SA;Password=Test@12;TrustServerCertificate=True;
     depends_on:
       - sqlserver
     expose:
