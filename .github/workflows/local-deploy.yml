@@ -1,19 +1,25 @@
-﻿name: Local Docker Compose Deploy
+﻿name: Deploy to EC2
 
 on:
   push:
-    branches:
-      - main  # Local testing trigger
+    branches: [ main ]
 
 jobs:
-  build-and-deploy:
-    runs-on: self-hosted
+  deploy:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Build Docker Compose (No Push, Local Build)
-        run: |
-          docker-compose build
-          docker-compose up -d
+      - name: SSH into EC2 and Deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/projects/superhero-webapi
+            git pull origin main
+            docker-compose down
+            docker-compose up --build -d
