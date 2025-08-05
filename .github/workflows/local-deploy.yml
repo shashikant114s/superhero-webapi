@@ -1,0 +1,19 @@
+﻿name: Local Docker Compose Deploy
+
+on:
+  push:
+    branches:
+      - main  # Local testing trigger
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Build Docker Compose (No Push, Local Build)
+        run: |
+          docker-compose build
+          docker-compose up -d
