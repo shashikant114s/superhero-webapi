@@ -1,11 +1,14 @@
 ﻿name: Deploy to EC2
 
 on:
-  push:
-    branches: [ main ]
+  pull_request:
+    types: [closed]
+    branches:
+      - development
 
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +23,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/projects/superhero-webapi
-            git pull origin main
+            git pull origin development
             docker-compose down
             docker-compose up --build -d
