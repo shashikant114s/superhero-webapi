@@ -24,8 +24,8 @@ A simple .NET 8 Web API with SQL Server and NGINX reverse proxy, dockerized for 
 ## ⚙️ Environment Variables
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `DB_CONNECTION_STRING` | SQL Server connection string | `Server=sqlserver,1433;Database=SuperHeros;User Id=SA;Password=Test@12;TrustServerCertificate=True;` |
-| `SA_PASSWORD` | SQL Server SA password | `Test@12` |
+| `DB_CONNECTION_STRING` | SQL Server connection string | `Server=sqlserver,1433;Database=SuperHeros;User Id=SA;Password=Test@123;TrustServerCertificate=True;` |
+| `SA_PASSWORD` | SQL Server SA password | `Test@123` |
 
 ---
 
