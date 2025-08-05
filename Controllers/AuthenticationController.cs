@@ -11,6 +11,7 @@ namespace SuperHeros.Controllers
     /*[ApiController]
     [Route("Authentication")]*/
     //[ApiExplorerSettings(GroupName = "v1")]
+    //[ApiExplorerSettings(GroupName = "v1")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IConfiguration _configuration;
