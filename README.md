@@ -73,3 +73,5 @@ This project uses **GitHub Actions** to automatically deploy changes to an EC2 i
 # Difficulties
 <img width="1919" height="525" alt="image" src="https://github.com/user-attachments/assets/d6afefd3-7f78-4c8a-b161-e6bdc08db138" />
 <img width="1800" height="975" alt="Screenshot From 2025-08-05 22-59-20" src="https://github.com/user-attachments/assets/567325b8-7fda-4cee-adea-557ee20f4bbb" />
+<img width="1917" height="999" alt="image" src="https://github.com/user-attachments/assets/33df0fdf-efd3-416e-9127-a4bbd02165a8" />
+
