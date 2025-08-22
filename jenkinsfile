@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'shashikdocker/demo-app'
+        IMAGE_NAME = 'shashikdocker/superhero-webapi'
         IMAGE_TAG = "${env.BUILD_NUMBER}"  // Automatically tags with Jenkins build number
     }
 
@@ -30,8 +30,9 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'Docker-Hub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh """
+                        echo 'Docker hub Login... '
                         echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
                         docker push ${IMAGE_NAME}:${IMAGE_TAG}
                     """
