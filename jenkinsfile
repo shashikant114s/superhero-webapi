@@ -39,5 +39,15 @@ pipeline {
                 }
             }
         }
+        stage('Deploy Container') {
+            steps {
+                echo "Deploying container with image: ${IMAGE_NAME}:${IMAGE_TAG}"
+                // Ensure Docker network exists before trying to run the container
+                sh """
+                    docker-compose down
+                    docker-compose up --build -d
+                """
+            }
+        }
     }
 }
