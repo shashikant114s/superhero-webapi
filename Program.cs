@@ -5,22 +5,15 @@ using SuperHeros.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.ConfigureIISOptions();
-
 builder.Services.ConfigureSql(builder.Configuration);
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigureSwagger();
 
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<RepositoryContext>();
-    dbContext.Database.Migrate();  // Apply migrations
-}
-
+// ✅ Add CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -34,7 +27,16 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// ✅ Apply migrations AFTER app is built
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<RepositoryContext>();
+    dbContext.Database.Migrate();  // Apply migrations
+}
+
+// ✅ Middleware order
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -46,4 +48,3 @@ app.UseSwaggerUI();
 app.MapControllers();
 
 app.Run();
-
